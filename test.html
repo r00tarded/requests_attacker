@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" >
+<head>
+<title>サイト管理 | Mezzanine</title>
+<meta name="robots" content="NONE,NOARCHIVE" />
+
+<!-- LOADING -->
+
+
+<!-- STYLESHEETS / EXTRASTYLE -->
+
+
+    <link rel="stylesheet" type="text/css" href="/static/grappelli/css/base.css" />
+
+<link rel="stylesheet" href="/static/mezzanine/css/admin/global.css">
+<style>
+    /* These are set in PageAdmin's view methods, and mezzanine.utils.admin.SingletonAdmin */
+    
+    
+    
+</style>
+
+
+
+
+<!-- JAVASCRIPTS / EXTRAHEAD -->
+
+<script>
+    
+    
+    
+    
+    
+    window.__home_link = '<a href="/">サイトを見る</a>';
+    window.__csrf_token = 'yIrZ3NpO5XefTnvHwm9vmYSmqPOL2HbqJe0SQVU8rqng2Bj62irZBCoO0auZj722';
+    window.__admin_keywords_submit_url = '/ja/admin/admin_keywords_submit/';
+    window.__filebrowser_url = '/ja/admin/media-library/browse/';
+    window.__link_list_url = '/ja/admin/displayable_links.js';
+    window.__tinymce_css = '/static/mezzanine/css/tinymce.css';
+    window.__admin_url = '/ja/admin/';
+    window.__static_proxy = '/ja/admin/asset_proxy/';
+    window.__admin_media_prefix__ = '/static/admin/';
+    window.__grappelli_installed = true;
+    window.__admin_menu_collapsed = false;
+    window.__language_code = 'ja';
+</script>
+
+
+<script type="text/javascript" src="/static/mezzanine/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+    // Ensures jQuery does not pollute the global namespace
+    $.noConflict();
+    
+    var ADMIN_URL = "/ja/admin/";
+</script>
+
+<script>
+jQuery(function($) {
+    $('.admin-title').click(function() {location = window.__admin_url;});
+    // This line can be removed after a decent amount of time has passed since
+    // https://github.com/stephenmcd/grappelli-safe/pull/56/files occurring.
+    $("#id_sitepermissions-__prefix__-sites").parent().parent().parent().remove();
+});
+</script>
+
+
+
+
+<link rel="stylesheet" href="/static/grappelli/css/dashboard.css">
+<link rel="stylesheet" href="/static/mezzanine/css/admin/dashboard.css">
+<!--[if IE 7]><style>.dashboard #content {padding-top: 80px;}</style><![endif]-->
+
+
+
+
+</head>
+
+<body class="dashboard">
+
+<!-- CONTAINER -->
+<div id="container">
+
+    <!-- HEADER -->
+    
+    
+
+<div id="header">
+    <div class="branding">&nbsp;</div>
+    <!-- Title -->
+    <div class="admin-title">Mezzanine</div>
+    
+    <!-- Bookmarks (temporary) -->
+    <ul id="user-tools">
+        <!-- Username -->
+        <li><strong>tom</strong></li>
+        <!-- Userlinks -->
+        
+        <!-- Documentation -->
+        
+        
+        <!-- Change Password -->
+        
+        
+        <li><a href="/ja/admin/password_change/">
+        
+        パスワードの変更</a></li>
+        <!-- Logout -->
+        
+        
+        <li><a href="/ja/admin/logout/">
+        
+        ログアウト</a></li>
+        
+    </ul>
+    
+</div>
+
+    
+
+    <!-- BREADCRUMBS -->
+    <div class="breadcrumbs">ホーム</div>
+
+    <!-- MESSAGES -->
+    
+
+    
+
+
+<div id="side-panel">
+<div class="dropdown-menu">
+<ul>
+    
+    <li>
+        <a href="#">内容</a>
+        <ul class="dropdown-menu-menu">
+        
+            
+            <li class="first"><a
+                href="/ja/admin/pages/page/">ページ</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/blog/blogpost/">ブログ投稿</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/generic/threadedcomment/">コメント</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/media-library/">メディアライブラリ</a></li>
+            
+        
+        </ul>
+    </li>
+    
+    <li>
+        <a href="#">サイト</a>
+        <ul class="dropdown-menu-menu">
+        
+            
+            <li class="first"><a
+                href="/ja/admin/sites/site/">サイト</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/redirects/redirect/">リダイレクト</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/conf/setting/">設定</a></li>
+            
+        
+        </ul>
+    </li>
+    
+    <li>
+        <a href="#">ユーザー</a>
+        <ul class="dropdown-menu-menu">
+        
+            
+            <li class="first"><a
+                href="/ja/admin/auth/user/">ユーザー</a></li>
+            
+        
+            
+            <li><a
+                href="/ja/admin/auth/group/">グループ</a></li>
+            
+        
+        </ul>
+    </li>
+    
+</ul>
+
+
+
+
+</div>
+<div id="side-panel-toggle"></div>
+</div>
+
+
+
+
+    <!-- CONTENT -->
+    <div id="content" class="colMS">
+        
+        <h1>ダッシュボード</h1>
+        <div id="content-main">
+
+
+<script>
+// Format newlines for HTML in the quick blog form, since the content
+// is HTML but the form field is plain text.
+jQuery(function($) {
+    $('#quick-blog-form').submit(function() {
+        var field = $('#quick-blog-form #id_content');
+        var value = field.attr('value').split('\n\n').join('</p><p>');
+        value = '<p>' + value.split('\n').join('<br>') + '</p>';
+        field.attr('value', value);
+        return true;
+    });
+});
+</script>
+<div class="module">
+    <h2>クイックブログ</h2>
+    <form method="post" id="quick-blog-form" action="/ja/admin/blog/blogpost/add/">
+        <input type='hidden' name='csrfmiddlewaretoken' value='yIrZ3NpO5XefTnvHwm9vmYSmqPOL2HbqJe0SQVU8rqng2Bj62irZBCoO0auZj722' />
+        <table id="quick-blog">
+            <tr><th><label for="id_title">タイトル:</label></th><td><input id="id_title" maxlength="500" name="title" type="text" required /></td></tr>
+<tr><th><label for="id_content">内容:</label></th><td><textarea class="mceEditor" cols="40" id="id_content" name="content" rows="10">
+</textarea><input id="id_status" name="status" type="hidden" value="1" /><input id="id_gen_description" name="gen_description" type="hidden" value="True" /><input id="id_allow_comments" name="allow_comments" type="hidden" value="True" /></td></tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td style="width:100%;text-align:right;">
+                    <input type="submit" class="default"
+                        value="下書き保存" />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+
+
+
+<div class="group-collapsible">
+   
+   <div class="module" id="app_内容">
+       <table>
+           <caption>内容</caption>
+           
+           <tr class="model-page">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/pages/page/">ページ</a></th>
+           
+
+           
+               <td><a href="/ja/admin/pages/page/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/pages/page/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-blogpost">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/blog/blogpost/">ブログ投稿</a></th>
+           
+
+           
+               <td><a href="/ja/admin/blog/blogpost/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/blog/blogpost/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-threadedcomment">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/generic/threadedcomment/">コメント</a></th>
+           
+
+           
+               <td>&nbsp;</td>
+           
+
+           
+               <td><a href="/ja/admin/generic/threadedcomment/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/media-library/">メディアライブラリ</a></th>
+           
+
+           
+               <td>&nbsp;</td>
+           
+
+           
+               <td>&nbsp;</td>
+           
+           </tr>
+           
+       </table>
+   </div>
+   
+   <div class="module" id="app_サイト">
+       <table>
+           <caption>サイト</caption>
+           
+           <tr class="model-site">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/sites/site/">サイト</a></th>
+           
+
+           
+               <td><a href="/ja/admin/sites/site/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/sites/site/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-redirect">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/redirects/redirect/">リダイレクト</a></th>
+           
+
+           
+               <td><a href="/ja/admin/redirects/redirect/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/redirects/redirect/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-setting">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/conf/setting/">設定</a></th>
+           
+
+           
+               <td><a href="/ja/admin/conf/setting/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/conf/setting/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+       </table>
+   </div>
+   
+   <div class="module" id="app_ユーザー">
+       <table>
+           <caption>ユーザー</caption>
+           
+           <tr class="model-user">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/auth/user/">ユーザー</a></th>
+           
+
+           
+               <td><a href="/ja/admin/auth/user/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/auth/user/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+           <tr class="model-group">
+           
+               <th scope="row" width="100%"><a
+                    href="/ja/admin/auth/group/">グループ</a></th>
+           
+
+           
+               <td><a href="/ja/admin/auth/group/add/"
+                    class="addlink">追加</a></td>
+           
+
+           
+               <td><a href="/ja/admin/auth/group/"
+                    class="changelink">変更</a></td>
+           
+           </tr>
+           
+       </table>
+   </div>
+   
+</div>
+
+</div>
+        
+    <div id="content-related" class="dashboard1">
+
+<div class="module" id="recent-actions-module">
+    <h2>最近の操作</h2>
+    <h3>自分の操作</h3>
+        
+        
+        
+        <p>利用可能なものがありません</p>
+        
+</div>
+
+</div>
+    
+    <div id="content-related" class="dashboard2">
+
+<div class="module" id="comments-module">
+    <h2>最近のコメント</h2>
+    
+    <ul>
+        
+    </ul>
+    
+</div>
+</div>
+    
+
+        <br class="clear" />
+    </div>
+
+    <!-- FOOTER -->
+    
+
+    
+        
+        <link rel="stylesheet" href="/static/mezzanine/chosen/chosen.css">
+        <script src="/static/mezzanine/chosen/chosen-0.9.12.jquery.js"></script>
+        <script src="/static/mezzanine/js/admin/navigation.js"></script>
+
+        
+        <script src="/static/mezzanine/js/admin/ajax_csrf.js"></script>
+        
+        <script src="/static/mezzanine/js/admin/collapse_backport.js"></script>
+        
+    
+
+
+
+</div>
+</body>
+</html>
+
