@@ -30,11 +30,7 @@ def acccess(http_info):
 
 
 def attacker(user, pass_):
-    res = acccess({
-        'method': 'GET',
-        'url': 'http://127.0.0.1:8000/admin',
-    })
-    cookie = res.cookies['csrftoken']
+    cookie = acccess({'method': 'GET', 'url': 'http://127.0.0.1:8000/admin'}).cookies['csrftoken']
     # NOTE: you should deley to access by using sleep function
     sleep(1)
     #ua = UserAgent(cache=False)
