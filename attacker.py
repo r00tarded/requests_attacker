@@ -46,6 +46,7 @@ def attacker(user, pass_):
         'url': 'http://127.0.0.1:8000/ja/admin/login/',
         'querystring': {'next': '/ja/admin'},
         'payload': 'username={}&password={}&this_is_the_login_form=1&mezzanine_login_interface=admin&csrfmiddlewaretoken={}'.format(user, pass_, cookie),
+        # NOTE: you can modify HTTP-Header
         'headers': {
             'useragent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
             #'useragent': ua.random,
