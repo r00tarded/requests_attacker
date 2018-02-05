@@ -12,12 +12,9 @@ import requests
 
 def acccess(http_info):
     request_info = http_info
-    if 'payload' not in http_info:
-        request_info['payload'] = {}
-    if 'headers' not in http_info:
-        request_info['headers'] = {}
-    if 'querystring' not in http_info:
-        request_info['querystring'] = {}
+    for key in ('payload', 'headers', 'querystring'):
+        if key not in http_info:
+            request_info[key] = {}
 
     try:
         res = requests.request(
