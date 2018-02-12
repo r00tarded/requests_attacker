@@ -1,5 +1,6 @@
 certifi==2018.1.18
 chardet==3.0.4
+configparser==3.5.0
 fake-useragent==0.1.8
 idna==2.6
 python-dateutil==2.6.1

