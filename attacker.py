@@ -7,7 +7,6 @@ import random
 from time import sleep
 
 import requests
-
 from fake_useragent import UserAgent
 
 
@@ -75,11 +74,11 @@ def main():
     config = configparser.SafeConfigParser()
     config.read('./attacker.conf')
 
-    with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attack_list.csv')))) as f:
+    with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
         reader = csv.reader(f)
         header = next(reader)
         for row in reader:
-            attacker(str(row[0]), str(row[1]), config)
+            attacker(str(row[0]), str(row[2]), config)
 
 
 if __name__ == '__main__':
