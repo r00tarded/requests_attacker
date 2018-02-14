@@ -77,8 +77,12 @@ def main():
     with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
         reader = csv.reader(f)
         header = next(reader)
-        for row in reader:
-            attacker(str(row[0]), str(row[2]), config)
+        if config.get('general', 'account') == "username":
+            for row in reader:
+                attacker(str(row[0]), str(row[2]), config)
+        elif config.get('general', 'account') == "email":
+            for row in reader:
+                attacker(str(row[1]), str(row[2]), config)
 
 
 if __name__ == '__main__':
