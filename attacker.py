@@ -52,7 +52,7 @@ def attacker(user, pass_, config):
             'Referer': '',
             'Accept': config.get('http_headers', 'accept'),
             'Accept-Encoding': 'gzip, deflate, br',
-            'Accept_Language': config.get('http_headers', 'accept_language'),
+            'Accept_Languages': config.get('http_headers', 'accept_language'),
             'Content-Type': 'text/html; charset=utf-8',
             'Connection': 'keep-alive',
             'Origin': 'http://point.recruit.co.jp',
