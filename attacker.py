@@ -14,12 +14,12 @@ import requests
 from fake_useragent import UserAgent
 
 
-def gen_ipaddr(ip_type, num):
+def gen_ipaddr(ip_type, count):
     network = ipaddr.IPv4Network('96.0.0.0/4')
     if ip_type == "random":
         return ipaddr.IPv4Address(random.randrange(int(network.network) + 1, int(network.broadcast) - 1))
     elif ip_type == "increment":
-        return ipaddr.IPv4Address(int(network.network) + num)
+        return ipaddr.IPv4Address(int(network.network) + count)
     else:
         print("{} don't exsit setting. you should set random or increment. ".format(ip_type))
         sys.exit(1)
@@ -120,32 +120,6 @@ def attacker(user, pass_, config):
     interval(config)
 
 
-def ipchange_test(scenario, num):
-    count = 10
-    if scenario == "test1":
-        ip = gen_ipaddr("random", num)
-        print(ip, num)
-    elif scenario == "test2":
-        ip = gen_ipaddr("increment", num)
-        print(ip, num)
-    elif scenario == "test3":
-        if (num % count) == 0:
-            ip = gen_ipaddr("random", (num // count))
-            print(ip, num)
-    elif scenario == "test4":
-        if (num % count) == 0:
-            ip = gen_ipaddr("increment", (num // count))
-            print(ip, num)
-    elif scenario == "test5":
-        if (num % random.randint(1, 20)) == 0:
-            ip = gen_ipaddr("random", (num // count))
-            print(ip, num)
-    elif scenario == "test6":
-        if (num % count) == 0:
-            ip = gen_ipaddr("increment", (num // count))
-            print(ip, num)
-
-
 def main():
     config = configparser.SafeConfigParser()
     config.read((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attacker.conf'))))
@@ -161,12 +135,50 @@ def main():
         elif config.get('general', 'account') == "email":
             account = 1
         else:
-            print("Warn: don't exsit setting and so, set username account")
+            print("Warn: doesn't exsit setting and so, set username account")
             account = 0
+
+        count = 1
+        param = 10
         for row in reader:
             #attacker(str(row[account]), str(row[2]), config)
             if 'scenario' in locals():
-                ipchange_test(scenario, reader.line_num)
+                if scenario == "test1":
+                    ip = gen_ipaddr("random", count)
+                    change_ipaddr(ip)
+                    count += 1
+                elif scenario == "test2":
+                    ip = gen_ipaddr("increment", count)
+                    change_ipaddr(ip)
+                    print(ip, count)
+                    count += 1
+                elif scenario == "test3":
+                    if (reader.line_num % param) == 0:
+                        ip = gen_ipaddr("random", count)
+                        change_ipaddr(ip)
+                        print(ip, count)
+                        count += 1
+                elif scenario == "test4":
+                    if (reader.line_num % param) == 0:
+                        ip = gen_ipaddr("increment", count)
+                        change_ipaddr(ip)
+                        print(ip, count)
+                        count += 1
+                elif scenario == "test5":
+                    if (reader.line_num % random.randint(1, 20)) == 0:
+                        ip = gen_ipaddr("random", count)
+                        change_ipaddr(ip)
+                        print(ip, count)
+                        count += 1
+                elif scenario == "test6":
+                    if (reader.line_num % random.randint(1, 20)) == 0:
+                        ip = gen_ipaddr("increment", count)
+                        change_ipaddr(ip)
+                        print(ip, count)
+                        count += 1
+                else:
+                    print("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))
+                    sys.exit(1)
 
 
 if __name__ == '__main__':
