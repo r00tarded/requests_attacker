@@ -4,6 +4,7 @@ import configparser
 import csv
 import os
 import random
+import subprocess
 import sys
 from time import sleep
 
@@ -22,6 +23,21 @@ def gen_ipaddr(ip_network, ip_type):
     else:
         print("{} don't exsit setting. you should set random or increment. ".format(ip_type))
         sys.exit(1)
+
+
+def change_ipaddr(ip_addr):
+    cmd_list = (
+        "ip flush dev ens224",
+        "ip addr add {}/4 dev ens224".format(ip_addr),
+        "ip link set ens224 up",
+        "route add -net 160.17.0.0 gw 111.255.255.254 netmask 255.255.0.0 dev ens224"
+    )
+    for cmd in cmd_list:
+        try:
+            proc = subprocess.Popen(cmd, shell=True)
+            proc.wait()
+        except Exception as e:
+            print(e)
 
 
 def acccess(http_info):
@@ -108,7 +124,7 @@ def main():
     config = configparser.SafeConfigParser()
     config.read('./attacker.conf')
     ip = gen_ipaddr(config.get('general', 'network'), config.get('general', 'ip_type'))
-    print(ip)
+    change_ipaddr(ip)
     # with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
     #     reader = csv.reader(f)
     #     if config.get('general', 'account') == "username":
