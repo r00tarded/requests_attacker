@@ -14,12 +14,12 @@ import requests
 from fake_useragent import UserAgent
 
 
-def gen_ipaddr(ip_type):
+def gen_ipaddr(ip_type, num):
     network = ipaddr.IPv4Network('96.0.0.0/4')
     if ip_type == "random":
         return ipaddr.IPv4Address(random.randrange(int(network.network) + 1, int(network.broadcast) - 1))
     elif ip_type == "increment":
-        return ipaddr.IPv4Address(int(network.network) + 1)
+        return ipaddr.IPv4Address(int(network.network) + num)
     else:
         print("{} don't exsit setting. you should set random or increment. ".format(ip_type))
         sys.exit(1)
@@ -119,19 +119,24 @@ def attacker(user, pass_, config):
         print("response doesn't exsit. maybe, one or more http-headers are wrong.")
     interval(config)
 
-def ipchange_test(scenario):
-    print(scenario)
-    
+
+def ipchange_test(scenario, num):
+    if scenario == "test1":
+        ip = gen_ipaddr("random", num)
+        print(ip)
+    elif scenario == "test2":
+        ip = gen_ipaddr("increment", num)
+        print(ip)
+
+
 def main():
     config = configparser.SafeConfigParser()
-    config.read('./attacker.conf')
-    # ip = gen_ipaddr(config.get('general', 'network'), config.get('general', 'ip_type'))
-    # change_ipaddr(ip)
+    config.read((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attacker.conf'))))
     try:
-        scenario=config.get('general', 'scenario')
+        scenario = config.get('general', 'scenario')
     except Exception as e:
         print(e)
-    
+
     with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
         reader = csv.reader(f)
         if config.get('general', 'account') == "username":
@@ -144,7 +149,7 @@ def main():
         for row in reader:
             #attacker(str(row[account]), str(row[2]), config)
             if 'scenario' in locals():
-                ipchange_test(scenario)
+                ipchange_test(scenario, reader.line_num)
 
 
 if __name__ == '__main__':
