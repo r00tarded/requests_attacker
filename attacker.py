@@ -124,14 +124,26 @@ def ipchange_test(scenario, num):
     count = 10
     if scenario == "test1":
         ip = gen_ipaddr("random", num)
-        print(ip,num)
+        print(ip, num)
     elif scenario == "test2":
         ip = gen_ipaddr("increment", num)
-        print(ip,num)
+        print(ip, num)
     elif scenario == "test3":
         if (num % count) == 0:
             ip = gen_ipaddr("random", (num // count))
-            print(ip,num)
+            print(ip, num)
+    elif scenario == "test4":
+        if (num % count) == 0:
+            ip = gen_ipaddr("increment", (num // count))
+            print(ip, num)
+    elif scenario == "test5":
+        if (num % random.randint(1, 20)) == 0:
+            ip = gen_ipaddr("random", (num // count))
+            print(ip, num)
+    elif scenario == "test6":
+        if (num % count) == 0:
+            ip = gen_ipaddr("increment", (num // count))
+            print(ip, num)
 
 
 def main():
