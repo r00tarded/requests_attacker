@@ -6,6 +6,7 @@ import os
 import random
 import subprocess
 import sys
+from datetime import datetime
 from time import sleep
 
 import ipaddr
@@ -114,10 +115,18 @@ def attacker(user, pass_, config):
             result = "Succeeded"
         else:
             result = "Failed"
-        print("User: {}, Pass: {}, Result: {}".format(user, pass_, result))
+        now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        print("{} , User: {}, Pass: {}, Result: {}".format(now, user, pass_, result))
     else:
         print("response doesn't exsit. maybe, one or more http-headers are wrong.")
     interval(config)
+
+
+def do_scenario(ip_type, count):
+    now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    ip = gen_ipaddr(ip_type, count)
+    change_ipaddr(ip)
+    print("{} , ipaddress changed {}, chamged count {}".format(now, ip, count))
 
 
 def main():
@@ -140,41 +149,32 @@ def main():
 
         count = 1
         param = 10
+        
         for row in reader:
-            #attacker(str(row[account]), str(row[2]), config)
+            attacker(str(row[account]), str(row[2]), config)
+
             if 'scenario' in locals():
                 if scenario == "test1":
-                    ip = gen_ipaddr("random", count)
-                    change_ipaddr(ip)
+                    do_scenario("random", count)
                     count += 1
                 elif scenario == "test2":
-                    ip = gen_ipaddr("increment", count)
-                    change_ipaddr(ip)
-                    print(ip, count)
+                    do_scenario("increment", count)
                     count += 1
                 elif scenario == "test3":
                     if (reader.line_num % param) == 0:
-                        ip = gen_ipaddr("random", count)
-                        change_ipaddr(ip)
-                        print(ip, count)
+                        do_scenario("random", count)
                         count += 1
                 elif scenario == "test4":
                     if (reader.line_num % param) == 0:
-                        ip = gen_ipaddr("increment", count)
-                        change_ipaddr(ip)
-                        print(ip, count)
+                        do_scenario("increment", count)
                         count += 1
                 elif scenario == "test5":
                     if (reader.line_num % random.randint(1, 20)) == 0:
-                        ip = gen_ipaddr("random", count)
-                        change_ipaddr(ip)
-                        print(ip, count)
+                        do_scenario("random", count)
                         count += 1
                 elif scenario == "test6":
                     if (reader.line_num % random.randint(1, 20)) == 0:
-                        ip = gen_ipaddr("increment", count)
-                        change_ipaddr(ip)
-                        print(ip, count)
+                        do_scenario("increment", count)
                         count += 1
                 else:
                     print("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))

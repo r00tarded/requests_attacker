@@ -25,19 +25,19 @@ User: tom, Pass: tom, Result: Succeeded
 - attcker config file
 
 ```
-(requests_attacker) MacBook-Pro-4% cat attacker.conf
 [general]
 url=http://127.0.0.1:8000/ja/admin/login/
 account=username
 #account=email
-
+scenario=test4
+#test1~6
 
 [http_headers]
-# useragent = random
-useragent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:17.0) Gecko/20100101 Firefox/17.0.6
-referer=http://point.recruit.co.jp/
-accept=text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
-accept_language=ja,en-us;q=0.7,en;q=0.3
+# User-Agent = random
+User-Agent=Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:17.0) Gecko/20100101 Firefox/17.0.6
+Referer=http://point.recruit.co.jp/
+Accept=text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept_Language=ja,en-us;q=0.7,en;q=0.3
 
 [interval]
 max=3
@@ -53,6 +53,14 @@ melindajones,melindajones@lane.com,k9N?OPj76*fO
 scottaguirre,scottaguirre@parker.com,4w7^1}43HNJ
 ```
 
+- modify ip addr change scenario
+  - test1: changing ip randomly per acccess
+  - test2: changing ip incremently per acccess
+  - test3: changing ip randomly per 10 acccess
+  - test4: changing ip incremently per 10 acccess
+  - test5: changing ip randomly by random probability
+  - test6: changing ip incremently by random probability
+    
 ## Install
 
 ```
