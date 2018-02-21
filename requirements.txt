@@ -3,6 +3,7 @@ chardet==3.0.4
 configparser==3.5.0
 fake-useragent==0.1.8
 idna==2.6
+ipaddr==2.2.0
 python-dateutil==2.6.1
 requests==2.18.4
 six==1.11.0
