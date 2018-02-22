@@ -9,10 +9,10 @@ import sys
 from datetime import datetime
 from time import sleep
 
-import ipaddr
 import requests
-
 from fake_useragent import UserAgent
+
+import ipaddr
 
 
 def gen_ipaddr(ip_type, count):
@@ -149,10 +149,8 @@ def main():
 
         count = 1
         param = 10
-        
-        for row in reader:
-            attacker(str(row[account]), str(row[2]), config)
 
+        for row in reader:
             if 'scenario' in locals():
                 if scenario == "test1":
                     do_scenario("random", count)
@@ -179,6 +177,8 @@ def main():
                 else:
                     print("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))
                     sys.exit(1)
+
+                attacker(str(row[account]), str(row[2]), config)
 
 
 if __name__ == '__main__':
