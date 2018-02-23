@@ -10,10 +10,10 @@ import sys
 from logging import DEBUG, StreamHandler, getLogger
 from time import sleep
 
-import requests
-from fake_useragent import UserAgent
-
 import ipaddr
+import requests
+
+from fake_useragent import UserAgent
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -171,19 +171,19 @@ def main():
                 do_scenario("increment", count)
                 count += 1
             elif scenario == "test3":
-                if (reader.line_num % param) == 0 or count == 1:
+                if ((reader.line_num - 1) % param) == 0 or count == 1:
                     do_scenario("random", count)
                     count += 1
             elif scenario == "test4":
-                if (reader.line_num % param) == 0 or count == 1:
+                if ((reader.line_num - 1) % param) == 0 or count == 1:
                     do_scenario("increment", count)
                     count += 1
             elif scenario == "test5":
-                if (reader.line_num % random.randint(1, 20)) == 0 or count == 1:
+                if ((reader.line_num - 1) % random.randint(1, 20)) == 0 or count == 1:
                     do_scenario("random", count)
                     count += 1
             elif scenario == "test6":
-                if (reader.line_num % random.randint(1, 20)) == 0 or count == 1:
+                if ((reader.line_num - 1) % random.randint(1, 20)) == 0 or count == 1:
                     do_scenario("increment", count)
                     count += 1
             else:
