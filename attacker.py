@@ -30,7 +30,7 @@ def path(file_name):
 
 
 def gen_ipaddr(ip_type, count):
-    network = ipaddr.IPv4Network('101.0.0.0/8')
+    network = ipaddr.IPv4Network('101.0.0.0/16')
     if ip_type == "random":
         return ipaddr.IPv4Address(random.randrange(int(network.network) + 1, int(network.broadcast) - 1))
     elif ip_type == "increment":
@@ -43,7 +43,7 @@ def gen_ipaddr(ip_type, count):
 def change_ipaddr(ip_addr):
     cmd_list = (
         "ip addr flush dev ens224",
-        "ip addr add {}/8 dev ens224".format(ip_addr),
+        "ip addr add {}/16 dev ens224".format(ip_addr),
         "ip link set ens224 up",
         "route add -net 160.17.0.0 gw 111.255.255.254 netmask 255.255.0.0 dev ens224"
     )
