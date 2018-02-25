@@ -165,7 +165,7 @@ def main():
         param = 10
 
         for row in reader:
-            if scenario == "test1":
+            if scenario == "test0" or scenario == "test1":
                 do_scenario("random", count)
                 count += 1
             elif scenario == "test2":
@@ -190,8 +190,29 @@ def main():
             else:
                 logger.debug("{} doesn't exsit setting. you should set test1~test6. ".format(scenario))
                 sys.exit(1)
-
-            attacker(str(row[account]), str(row[2]), config)
+            if scenario == "test0":
+                useragent = config.get('http_headers', 'User-Agent')
+                if useragent == "random":
+                    useragent = ua.random
+                acccess({
+                    'method': 'GET',
+                    'url': config.get('general', 'url'),
+                    'headers': {
+                        'User-Agent': useragent,
+                        'Cookie': '',
+                        'Referer': 'https://www.google.co.jp/search?hl=ja&ei=XfKSWpH2OYaa0gTJ0a7YDg&q=%E3%83%AA%E3%82%AF%E3%83%AB%E3%83%BC%E3%83%88%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88&oq=%E3%83%AA%E3%82%AF%E3%83%AB%E3%83%BC%E3%83%88%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88&gs_l=psy-ab.3..0i4k1l8.1991.3416.0.3708.8.8.0.0.0.0.94.651.8.8.0....0...1c.1j4.64.psy-ab..0.8.650....0.W-Q_jaj_izg',
+                        'Accept': config.get('http_headers', 'accept'),
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Accept-Language': config.get('http_headers', 'accept_language'),
+                        'Content-Type': 'text/html; charset=utf-8',
+                        'Connection': 'keep-alive',
+                        'Cache-Control': 'no-cache',
+                        'Upgrade-Insecure-Requests': '1',
+                    },
+                })
+                interval(config)
+            else:
+                attacker(str(row[account]), str(row[2]), config)
 
 
 if __name__ == '__main__':
