@@ -10,10 +10,10 @@ import sys
 from logging import DEBUG, StreamHandler, getLogger
 from time import sleep
 
-import ipaddr
 import requests
-
 from fake_useragent import UserAgent
+
+import ipaddr
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -22,6 +22,7 @@ handler.setLevel(DEBUG)
 logger.setLevel(DEBUG)
 logger.addHandler(handler)
 logger.propagate = False
+ua = UserAgent()
 
 
 def path(file_name):
@@ -29,7 +30,7 @@ def path(file_name):
 
 
 def gen_ipaddr(ip_type, count):
-    network = ipaddr.IPv4Network('96.0.0.0/4')
+    network = ipaddr.IPv4Network('101.0.0.0/8')
     if ip_type == "random":
         return ipaddr.IPv4Address(random.randrange(int(network.network) + 1, int(network.broadcast) - 1))
     elif ip_type == "increment":
@@ -42,7 +43,7 @@ def gen_ipaddr(ip_type, count):
 def change_ipaddr(ip_addr):
     cmd_list = (
         "ip addr flush dev ens224",
-        "ip addr add {}/4 dev ens224".format(ip_addr),
+        "ip addr add {}/8 dev ens224".format(ip_addr),
         "ip link set ens224 up",
         "route add -net 160.17.0.0 gw 111.255.255.254 netmask 255.255.0.0 dev ens224"
     )
@@ -51,7 +52,7 @@ def change_ipaddr(ip_addr):
             proc = subprocess.Popen(cmd, shell=True)
             proc.wait()
         except Exception as e:
-            print(e)
+            logger.debug(e)
 
 
 def acccess(http_info):
@@ -70,7 +71,7 @@ def acccess(http_info):
         )
         return res
     except Exception as e:
-        print(e)
+        logger.debug(e)
 
 
 def interval(config):
@@ -93,7 +94,7 @@ def attacker(user, pass_, config):
         'headers': {
             'User-Agent': useragent,
             'Cookie': '',
-            'Referer': '',
+            'Referer': 'https://www.google.co.jp/search?hl=ja&ei=XfKSWpH2OYaa0gTJ0a7YDg&q=%E3%83%AA%E3%82%AF%E3%83%AB%E3%83%BC%E3%83%88%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88&oq=%E3%83%AA%E3%82%AF%E3%83%AB%E3%83%BC%E3%83%88%E3%83%9D%E3%82%A4%E3%83%B3%E3%83%88&gs_l=psy-ab.3..0i4k1l8.1991.3416.0.3708.8.8.0.0.0.0.94.651.8.8.0....0...1c.1j4.64.psy-ab..0.8.650....0.W-Q_jaj_izg',
             'Accept': config.get('http_headers', 'accept'),
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': config.get('http_headers', 'accept_language'),
@@ -142,7 +143,7 @@ def do_scenario(ip_type, count):
 
 def main():
     config = configparser.SafeConfigParser()
-    print(path('attacker.conf'))
+    logger.debug(path('attacker.conf'))
     config.read(path('attacker.conf'))
 
     if config.get('general', 'scenario'):
@@ -157,7 +158,7 @@ def main():
         elif config.get('general', 'account') == "email":
             account = 1
         else:
-            print("Warn: doesn't exsit setting and so, set username account")
+            logger.debug("Warn: doesn't exsit setting and so, set username account")
             account = 0
 
         count = 1
