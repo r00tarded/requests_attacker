@@ -10,10 +10,10 @@ import sys
 from logging import DEBUG, StreamHandler, getLogger
 from time import sleep
 
-import requests
-from fake_useragent import UserAgent
-
 import ipaddr
+import requests
+
+from fake_useragent import UserAgent
 
 logger = getLogger(__name__)
 handler = StreamHandler()
@@ -156,20 +156,21 @@ def main():
     else:
         loop_flag = False
 
-    with open(path('account_list.csv')) as f:
-        reader = csv.reader(f)
-        if config.get('general', 'account') == "username":
-            account = 0
-        elif config.get('general', 'account') == "email":
-            account = 1
-        else:
-            logger.debug("Warn: doesn't exsit setting and so, set username account")
-            account = 0
+    if config.get('general', 'account') == "username":
+        account = 0
+    elif config.get('general', 'account') == "email":
+        account = 1
+    else:
+        logger.debug("Warn: doesn't exsit setting and so, set username account")
+        account = 0
 
-        count = 1
-        param = 10
+    count = 1
+    param = 10
 
-        while loop_flag:
+    while loop_flag:
+
+        with open(path('account_list.csv')) as f:
+            reader = csv.reader(f)
             for row in reader:
                 if scenario == "test0" or scenario == "test1":
                     do_scenario("random", count)
@@ -218,6 +219,7 @@ def main():
                         },
                     })
                     interval(config)
+                    print("test")
                 else:
                     attacker(str(row[account]), str(row[2]), config)
 
