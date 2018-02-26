@@ -43,7 +43,7 @@ def gen_ipaddr(ip_type, count):
 def change_ipaddr(ip_addr):
     cmd_list = (
         "ip addr flush dev ens224",
-        "ip addr add {}/16 dev ens224".format(ip_addr),
+        "ip addr add {}/4 dev ens224".format(ip_addr),
         "ip link set ens224 up",
         "route add -net 160.17.0.0 gw 111.255.255.254 netmask 255.255.0.0 dev ens224"
     )
